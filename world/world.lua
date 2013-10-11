@@ -15,28 +15,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Actor = require("world.actor")
-local loader = require("love2d-assets-loader.Loader.loader")
-local Vector = require("hump.vector")
-local World = require("world.world")
+local class = require("middleclass.middleclass")
 
-local world
+local World = class("world.world")
 
-function love.load()
-   loader.setBaseImageDir("data/images")
-   loader.init()
-
-   world = World:new()
-
-   local actor = Actor:new()
-   actor:set_position(Vector.new(400, 240))
-   world:add(actor)
+function World:initialize()
+   self._objects = {}
 end
 
-function love.update(dt)
-   world:update(dt)
+function World:add(object)
+   table.insert(self._objects, object)
+
+   object._world = self
 end
 
-function love.draw()
-   world:draw()
+function World:update(dt)
+   for _, object in ipairs(self._objects) do
+      object:update(dt)
+   end
 end
+
+function World:draw()
+   for _, object in ipairs(self._objects) do
+      object:draw(dt)
+   end
+end
+
+return World
