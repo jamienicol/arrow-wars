@@ -15,11 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
+local Actor = require("world.actor")
+local loader = require("love2d-assets-loader.Loader.loader")
+local Vector = require("hump.vector")
+
+local actor
+
 function love.load()
+   loader.setBaseImageDir("data/images")
+   loader.init()
+
+   actor = Actor:new()
+   actor:set_position(Vector.new(400, 240))
 end
 
 function love.update(dt)
+   actor:update(dt)
 end
 
 function love.draw()
+   actor:draw()
 end
