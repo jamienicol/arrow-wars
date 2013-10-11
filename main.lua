@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local Actor = require("world.actor")
+local HumanActorController = require("world.humanactorcontroller")
 local loader = require("love2d-assets-loader.Loader.loader")
 local Vector = require("hump.vector")
 local World = require("world.world")
@@ -30,6 +31,8 @@ function love.load()
 
    local actor = Actor:new()
    actor:set_position(Vector.new(400, 240))
+   actor:set_max_speed(256)
+   actor:set_controller(HumanActorController:new(actor))
    world:add(actor)
 end
 

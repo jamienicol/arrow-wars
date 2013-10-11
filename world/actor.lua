@@ -24,6 +24,10 @@ local Actor = class("world.Actor")
 function Actor:initialize()
    self._position = Vector.new(0, 0)
    self._direction_facing = 0
+
+   self._max_speed = 0
+
+   self._controller = nil
 end
 
 function Actor:get_position()
@@ -42,7 +46,26 @@ function Actor:set_direction_facing(direction_facing)
    self._direction_facing = direction_facing
 end
 
+function Actor:get_max_speed()
+   return self._max_speed
+end
+
+function Actor:set_max_speed(max_speed)
+   self._max_speed = max_speed
+end
+
+function Actor:get_controller()
+   return self._controller
+end
+
+function Actor:set_controller(controller)
+   self._controller = controller
+end
+
 function Actor:update(dt)
+   if self._controller then
+      self._controller:update(dt)
+   end
 end
 
 function Actor:draw()
