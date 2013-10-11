@@ -16,11 +16,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local class = require("middleclass.middleclass")
+local AdvTiledLoader = require("AdvTiledLoader")
 
 local World = class("world.world")
 
 function World:initialize()
    self._objects = {}
+
+   local loader = AdvTiledLoader.Loader
+   loader.path = "data/maps/"
+   self._map = loader.load("map.tmx")
 end
 
 function World:add(object)
@@ -36,6 +41,8 @@ function World:update(dt)
 end
 
 function World:draw()
+   self._map:draw()
+
    for _, object in ipairs(self._objects) do
       object:draw(dt)
    end
