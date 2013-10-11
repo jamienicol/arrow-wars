@@ -7,3 +7,6 @@
 [submodule "love2d-assets-loader"]
 	path = love2d-assets-loader
 	url = https://github.com/Yonaba/love2d-assets-loader.git
+[submodule "AdvTiledLoader"]
+	path = AdvTiledLoader
+	url = https://github.com/Kadoba/Advanced-Tiled-Loader.git
