@@ -25,7 +25,16 @@ function World:initialize()
 
    local loader = AdvTiledLoader.Loader
    loader.path = "data/maps/"
+   loader.useSpriteBatch = true
    self._map = loader.load("map.tmx")
+end
+
+function World:get_width()
+   return self._map.width * self._map.tileWidth
+end
+
+function World:get_height()
+   return self._map.height * self._map.tileHeight
 end
 
 function World:add(object)
@@ -40,12 +49,25 @@ function World:update(dt)
    end
 end
 
-function World:draw()
+function World:draw(camera)
+   camera:attach()
+
+   local viewport_width = love.graphics.getWidth() / camera.scale
+   local viewport_height = love.graphics.getHeight() / camera.scale
+   local viewport_left = camera.x - viewport_width / 2
+   local viewport_top = camera.y - viewport_height / 2
+   self._map:setDrawRange(viewport_left,
+                          viewport_top,
+                          viewport_width,
+                          viewport_height)
+
    self._map:draw()
 
    for _, object in ipairs(self._objects) do
       object:draw(dt)
    end
+
+   camera:detach()
 end
 
 return World
