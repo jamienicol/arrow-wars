@@ -67,19 +67,24 @@ function Actor:set_controller(controller)
 end
 
 function Actor:update(dt)
-   self._velocity = (self._position - self._prev_position) / dt
-   self._prev_position = self._position
-
    if self._controller then
       self._controller:update(dt)
    end
+
+   self._prev_velocity = self._velocity
+   self._velocity = (self._position - self._prev_position) / dt
+   self._prev_position = self._position
+end
+
+function Actor:move(displacement)
+   self._position = self._position + displacement
 end
 
 function Actor:shoot()
    local facing_vec = Vector.new(0, -1):rotated(self._direction_facing)
 
-   local bullet = Bullet:new(self._position + facing_vec * self._radius,
-                             facing_vec * 640 + self._velocity)
+   local bullet = Bullet:new(self._prev_position + facing_vec * self._radius,
+                             facing_vec * 640 + self._prev_velocity)
    self._world:add(bullet)
 end
 

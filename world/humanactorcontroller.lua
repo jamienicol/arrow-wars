@@ -37,11 +37,6 @@ end
 function HumanActorController:update(dt)
    self._options:update()
 
-   -- shoot before position is updated
-   if self._control.tap.shoot then
-      self._actor:shoot()
-   end
-
    -- movement
    local displacement = Vector.new(0, 0)
    if self._control.up then
@@ -57,13 +52,17 @@ function HumanActorController:update(dt)
       displacement.x = displacement.x + 1
    end
    displacement = displacement:normalized() * self._actor._max_speed * dt
-
-   self._actor._position = self._actor._position + displacement
+   self._actor:move(displacement)
 
    -- direction facing
    if not self._control.strafe and displacement:len() > 0 then
-      self._actor._direction_facing = math.atan2(displacement.x,
-                                                 -displacement.y)
+      self._actor:set_direction_facing(math.atan2(displacement.x,
+                                                  -displacement.y))
+   end
+
+   -- shoot
+   if self._control.tap.shoot then
+      self._actor:shoot()
    end
 end
 
