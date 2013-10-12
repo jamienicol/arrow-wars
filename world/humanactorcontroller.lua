@@ -25,16 +25,22 @@ function HumanActorController:initialize(actor)
 
    self._options, self._control = love.filesystem.load("TLbind.lua")()
    self._options.keys = {
-      up="up",
-      down="down",
-      left="left",
-      right="right",
-      lctrl="strafe"
+      up = "up",
+      down = "down",
+      left = "left",
+      right = "right",
+      lctrl = "strafe",
+      [" "] = "shoot"
    }
 end
 
 function HumanActorController:update(dt)
    self._options:update()
+
+   -- shoot before position is updated
+   if self._control.tap.shoot then
+      self._actor:shoot()
+   end
 
    -- movement
    local displacement = Vector.new(0, 0)

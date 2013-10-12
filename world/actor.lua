@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
+local Bullet = require("world.bullet")
 local class = require("middleclass.middleclass")
 local loader = require("love2d-assets-loader.Loader.loader")
 local Vector = require("hump.vector")
@@ -22,10 +23,12 @@ local Vector = require("hump.vector")
 local Actor = class("world.Actor")
 
 function Actor:initialize()
-   self._position = Vector.new(0, 0)
+   self:set_position(Vector.new(0, 0))
    self._direction_facing = 0
 
    self._max_speed = 0
+
+   self._radius = 16
 
    self._controller = nil
 end
@@ -35,6 +38,7 @@ function Actor:get_position()
 end
 
 function Actor:set_position(position)
+   self._prev_position = position
    self._position = position
 end
 
@@ -63,9 +67,20 @@ function Actor:set_controller(controller)
 end
 
 function Actor:update(dt)
+   self._velocity = (self._position - self._prev_position) / dt
+   self._prev_position = self._position
+
    if self._controller then
       self._controller:update(dt)
    end
+end
+
+function Actor:shoot()
+   local facing_vec = Vector.new(0, -1):rotated(self._direction_facing)
+
+   local bullet = Bullet:new(self._position + facing_vec * self._radius,
+                             facing_vec * 640 + self._velocity)
+   self._world:add(bullet)
 end
 
 function Actor:draw()
