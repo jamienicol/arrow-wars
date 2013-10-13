@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 local class = require("middleclass.middleclass")
 local AdvTiledLoader = require("AdvTiledLoader")
+local Collider = require("hardoncollider")
+local Shapes = require("hardoncollider.shapes")
 
 local World = class("world.world")
 
@@ -27,6 +29,68 @@ function World:initialize()
    loader.path = "data/maps/"
    loader.useSpriteBatch = true
    self._map = loader.load("map.tmx")
+
+   self._collider = Collider(100,
+                             function(...)
+                                self:on_collision(...)
+                             end,
+                             function(...)
+                                self:collision_stop(...)
+                             end)
+
+   for _, box in pairs(self:_create_edge_collision_boxes()) do
+      self._collider:addShape(box)
+      self._collider:setPassive(box)
+   end
+
+end
+
+function World:_create_edge_collision_boxes()
+   local top
+   top = Shapes.newPolygonShape(-self._map.tileWidth,
+                                -self._map.tileHeight,
+                                self:get_width() + self._map.tileWidth,
+                                -self._map.tileHeight,
+                                self:get_width() + self._map.tileWidth,
+                                0,
+                                -self._map.tileWidth,
+                                0)
+   top.type = "edge"
+
+   local bottom
+   bottom = Shapes.newPolygonShape(-self._map.tileWidth,
+                                   self:get_height(),
+                                   self:get_width() + self._map.tileWidth,
+                                   self:get_height(),
+                                   self:get_width() + self._map.tileWidth,
+                                   self:get_height() + self._map.tileHeight,
+                                   -self._map.tileWidth,
+                                   self:get_height() + self._map.tileHeight)
+   bottom.type = "edge"
+
+   local left
+   left = Shapes.newPolygonShape(-self._map.tileWidth,
+                                 -self._map.tileHeight,
+                                 0,
+                                 -self._map.tileHeight,
+                                 0,
+                                 self:get_height() + self._map.tileHeight,
+                                 -self._map.tileWidth,
+                                 self:get_height() + self._map.tileHeight)
+   left.type = "edge"
+
+   local right
+   right = Shapes.newPolygonShape(self:get_width(),
+                                  -self._map.tileHeight,
+                                  self:get_width() + self._map.tileWidth,
+                                  -self._map.tileHeight,
+                                  self:get_width() + self._map.tileWidth,
+                                  self:get_height() + self._map.tileHeight,
+                                  self:get_width(),
+                                  self:get_height() + self._map.tileHeight)
+   right.type = "edge"
+
+   return { top, bottom, left, right }
 end
 
 function World:get_width()
@@ -41,11 +105,41 @@ function World:add(object)
    table.insert(self._objects, object)
 
    object._world = self
+
+   self._collider:addShape(object:get_bbox())
 end
 
 function World:update(dt)
    for _, object in ipairs(self._objects) do
       object:update(dt)
+   end
+
+   self._collider:update(dt)
+end
+
+function World:on_collision(dt, shape_a, shape_b, mtv_x, mtv_y)
+
+   local obj_a = shape_a.object
+   if obj_a and obj_a.on_collision then
+      obj_a:on_collision(dt, shape_b, mtv_x, mtv_y)
+   end
+
+   local obj_b = shape_b.object
+   if obj_b and obj_b.on_collision then
+      obj_b:on_collision(dt, shape_a, -mtv_x, -mtv_y)
+   end
+end
+
+function World:collision_stop(dt, shape_a, shape_b)
+
+   local obj_a = shape_a.object
+   if obj_a and obj_a.collision_stop then
+      obj_a:collision_stop(dt, shape_b)
+   end
+
+   local obj_b = shape_b.object
+   if obj_b and obj_b.collision_stop then
+      obj_b:collision_stop(dt, shape_a)
    end
 end
 

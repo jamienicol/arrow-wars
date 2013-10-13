@@ -17,13 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 local Bullet = require("world.bullet")
 local class = require("middleclass.middleclass")
+local Collider = require("hardoncollider")
 local loader = require("love2d-assets-loader.Loader.loader")
+local Shapes = require("hardoncollider.shapes")
 local Vector = require("hump.vector")
 
 local Actor = class("world.Actor")
 
 function Actor:initialize()
-   self:set_position(Vector.new(0, 0))
+   self._position = Vector.new(0, 0)
+   self._prev_position = Vector.new(0, 0)
+
    self._direction_facing = 0
 
    self._max_speed = 0
@@ -31,6 +35,12 @@ function Actor:initialize()
    self._radius = 16
 
    self._controller = nil
+
+   self._bbox = Shapes.newCircleShape(self._position.x,
+                                      self._position.y,
+                                      self._radius)
+   self._bbox.type = "actor"
+   self._bbox.object = self
 end
 
 function Actor:get_position()
@@ -40,6 +50,7 @@ end
 function Actor:set_position(position)
    self._prev_position = position
    self._position = position
+   self._bbox:moveTo(position.x, position.y)
 end
 
 function Actor:get_direction_facing()
@@ -66,6 +77,10 @@ function Actor:set_controller(controller)
    self._controller = controller
 end
 
+function Actor:get_bbox()
+   return self._bbox
+end
+
 function Actor:update(dt)
    if self._controller then
       self._controller:update(dt)
@@ -78,6 +93,7 @@ end
 
 function Actor:move(displacement)
    self._position = self._position + displacement
+   self._bbox:moveTo(self._position.x, self._position.y)
 end
 
 function Actor:shoot()
@@ -86,6 +102,12 @@ function Actor:shoot()
    local bullet = Bullet:new(self._prev_position + facing_vec * self._radius,
                              facing_vec * 640 + self._prev_velocity)
    self._world:add(bullet)
+end
+
+function Actor:on_collision(dt, shape, mtv_x, mtv_y)
+   if shape.type == "edge" then
+      self:move(Vector.new(mtv_x, mtv_y))
+   end
 end
 
 function Actor:draw()
