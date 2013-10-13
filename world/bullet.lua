@@ -16,17 +16,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local class = require("middleclass.middleclass")
+local Collider = require("hardoncollider")
 local loader = require("love2d-assets-loader.Loader.loader")
+local Shapes = require("hardoncollider.shapes")
 
 local Bullet = class("world.Bullet")
 
 function Bullet:initialize(position, velocity)
    self._position = position
    self._velocity = velocity
+
+   self._radius = 3
+
+   self._bbox = Shapes.newCircleShape(self._position.x,
+                                      self._position.y,
+                                      self._radius)
+   self._bbox.type = "bullet"
+   self._bbox.object = self
+end
+
+function Bullet:get_bbox()
+   return self._bbox
 end
 
 function Bullet:update(dt)
    self._position = self._position + self._velocity * dt
+   self._bbox:moveTo(self._position.x, self._position.y)
 end
 
 function Bullet:draw()
