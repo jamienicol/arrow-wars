@@ -43,6 +43,10 @@ function World:initialize()
       self._collider:setPassive(box)
    end
 
+   for _, box in pairs(self:_create_tile_collision_boxes()) do
+      self._collider:addShape(box)
+      self._collider:setPassive(box)
+   end
 end
 
 function World:_create_edge_collision_boxes()
@@ -91,6 +95,30 @@ function World:_create_edge_collision_boxes()
    right.type = "edge"
 
    return { top, bottom, left, right }
+end
+
+function World:_create_tile_collision_boxes()
+   local boxes = {}
+
+   for _, layer in pairs(self._map.layers) do
+      for x, y, tile in layer:iterate() do
+         if tile.properties.ground_passable == false then
+            local left = x * self._map.tileWidth
+            local right = left + self._map.tileWidth
+            local top = y * self._map.tileHeight
+            local bottom = top + self._map.tileHeight
+            local box = Shapes.newPolygonShape(left, top,
+                                               right, top,
+                                               right, bottom,
+                                               left, bottom)
+            box.type = "tile"
+            box.object = tile
+            table.insert(boxes, box)
+         end
+      end
+   end
+
+   return boxes
 end
 
 function World:get_width()
