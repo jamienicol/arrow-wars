@@ -109,7 +109,9 @@ function Actor:on_collision(dt, shape, mtv_x, mtv_y)
       self:move(Vector.new(mtv_x, mtv_y))
 
    elseif shape.type == "tile" then
-      self:move(Vector.new(mtv_x, mtv_y))
+      if shape.object.properties.ground_passable == false then
+         self:move(Vector.new(mtv_x, mtv_y))
+      end
 
    end
 end

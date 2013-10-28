@@ -102,7 +102,8 @@ function World:_create_tile_collision_boxes()
 
    for _, layer in pairs(self._map.layers) do
       for x, y, tile in layer:iterate() do
-         if tile.properties.ground_passable == false then
+         if tile.properties.ground_passable == false or
+            tile.properties.air_passable == false then
             local left = x * self._map.tileWidth
             local right = left + self._map.tileWidth
             local top = y * self._map.tileHeight
@@ -130,15 +131,23 @@ function World:get_height()
 end
 
 function World:add(object)
-   table.insert(self._objects, object)
+   self._objects[object] = object
 
    object._world = self
 
    self._collider:addShape(object:get_bbox())
 end
 
+function World:remove(object)
+   self._objects[object] = nil
+
+   object._world = nil
+
+   self._collider:remove(object:get_bbox())
+end
+
 function World:update(dt)
-   for _, object in ipairs(self._objects) do
+   for _, object in pairs(self._objects) do
       object:update(dt)
    end
 
@@ -185,7 +194,7 @@ function World:draw(camera)
 
    self._map:draw()
 
-   for _, object in ipairs(self._objects) do
+   for _, object in pairs(self._objects) do
       object:draw(dt)
    end
 

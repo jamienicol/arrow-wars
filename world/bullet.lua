@@ -44,6 +44,18 @@ function Bullet:update(dt)
    self._bbox:moveTo(self._position.x, self._position.y)
 end
 
+function Bullet:on_collision(dt, shape, mtv_x, mtv_y)
+   if shape.type == "edge" then
+      self._world:remove(self)
+
+   elseif shape.type == "tile" then
+      if shape.object.properties.air_passable == false then
+         self._world:remove(self)
+      end
+
+   end
+end
+
 function Bullet:draw()
    local image = loader.Image.bullet
    love.graphics.draw(image,
