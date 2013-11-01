@@ -20,6 +20,7 @@ local class = require("middleclass.middleclass")
 local Actor = require("world.actor")
 local Camera = require("hump.camera")
 local HumanActorController = require("world.humanactorcontroller")
+local SimpleAIActorController = require("world.simpleaiactorcontroller")
 local Vector = require("hump.vector")
 local World = require("world.world")
 
@@ -28,11 +29,20 @@ local SurvivalMode = class("game.SurvivalMode")
 function SurvivalMode:enter()
    self._world = World:new()
 
-   self._actor = Actor:new()
-   self._actor:set_position(Vector.new(400, 240))
-   self._actor:set_max_speed(256)
-   self._actor:set_controller(HumanActorController:new(self._actor))
-   self._world:add(self._actor)
+   self._human_actor = Actor:new()
+   self._human_actor:set_position(Vector.new(400, 240))
+   self._human_actor:set_max_speed(256)
+   local human_controller = HumanActorController:new(self._human_actor)
+   self._human_actor:set_controller(human_controller)
+   self._world:add(self._human_actor)
+
+   self._ai_actor = Actor:new()
+   self._ai_actor:set_position(Vector.new(800, 240))
+   self._ai_actor:set_max_speed(128)
+   local ai_controller = SimpleAIActorController:new(self._ai_actor,
+                                                     self._human_actor)
+   self._ai_actor:set_controller(ai_controller)
+   self._world:add(self._ai_actor)
 
    self._camera = Camera.new()
 end
@@ -46,12 +56,12 @@ function SurvivalMode:draw()
       math.max(love.graphics.getWidth() / 2,
                math.min(self._world:get_width() -
                            love.graphics.getWidth() / 2,
-                        self._actor:get_position().x))
+                        self._human_actor:get_position().x))
    local camera_y =
       math.max(love.graphics.getHeight() / 2,
                math.min(self._world:get_height() -
                            love.graphics.getHeight() / 2,
-                        self._actor:get_position().y))
+                        self._human_actor:get_position().y))
    self._camera:lookAt(camera_x, camera_y)
 
    self._world:draw(self._camera)

@@ -21,6 +21,8 @@ local loader = require("love2d-assets-loader.Loader.loader")
 local SurvivalMode = require("game.survivalmode")
 
 function love.load()
+   math.randomseed(os.time())
+
    loader.setBaseImageDir("data/images")
    loader.init()
 
