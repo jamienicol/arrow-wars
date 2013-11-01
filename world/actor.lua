@@ -113,6 +113,8 @@ function Actor:on_collision(dt, shape, mtv_x, mtv_y)
          self:move(Vector.new(mtv_x, mtv_y))
       end
 
+   elseif shape.type == "actor" then
+      self:move(Vector.new(mtv_x / 2, mtv_y / 2))
    end
 end
 
