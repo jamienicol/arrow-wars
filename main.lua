@@ -26,6 +26,30 @@ function love.load()
 
    gui.keyboard.cycle.next = {key = "down"}
    gui.keyboard.cycle.prev = {key = "up"}
+   gui.core.style.Button = function(state, title, x, y, w, h)
+      local f = assert(love.graphics.getFont())
+
+      x = x + (w - f:getWidth(title)) / 2
+      y = y + (h - f:getHeight(title)) / 2
+
+      if state == "normal" then
+         love.graphics.setColor({255, 255, 255})
+      else
+         love.graphics.setColor({255, 215, 63})
+      end
+
+      love.graphics.print(title, x, y)
+   end
+   gui.core.style.Label = function(state, text, align, x, y, w, h)
+      local f = assert(love.graphics.getFont())
+
+      x = x + (w - f:getWidth(text)) / 2
+      y = y + (h - f:getHeight(text)) / 2
+
+      love.graphics.setColor({255, 255, 255})
+
+      love.graphics.print(text, x, y)
+   end
 
    loader.setBaseImageDir("data/images")
    loader.init()
