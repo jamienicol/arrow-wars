@@ -25,22 +25,19 @@ local Vector = require("hump.vector")
 local Actor = class("world.Actor")
 
 function Actor:initialize()
-   self._position = Vector.new(0, 0)
-   self._prev_position = Vector.new(0, 0)
-
-   self._direction_facing = 0
-
    self._max_speed = 0
 
    self._radius = 16
 
    self._controller = nil
 
-   self._bbox = Shapes.newCircleShape(self._position.x,
-                                      self._position.y,
-                                      self._radius)
+   self._bbox = Shapes.newCircleShape(0, 0, self._radius)
    self._bbox.type = "actor"
    self._bbox.object = self
+
+   self:set_position(Vector.new(0, 0))
+
+   self:set_direction_facing(0)
 end
 
 function Actor:get_position()
@@ -50,6 +47,8 @@ end
 function Actor:set_position(position)
    self._prev_position = position
    self._position = position
+   self._prev_velocity = Vector.new(0, 0)
+   self._velocity = Vector.new(0, 0)
    self._bbox:moveTo(position.x, position.y)
 end
 
