@@ -19,6 +19,7 @@ local Bullet = require("world.bullet")
 local class = require("middleclass.middleclass")
 local Collider = require("hardoncollider")
 local loader = require("love2d-assets-loader.Loader.loader")
+local Signal = require("hump.signal")
 local Shapes = require("hardoncollider.shapes")
 local Vector = require("hump.vector")
 
@@ -33,6 +34,8 @@ function Actor:initialize()
 
    self._max_health = 0
    self._health = 0
+
+   self.signals = Signal.new()
 
    self._bbox = Shapes.newCircleShape(0, 0, self._radius)
    self._bbox.type = "actor"
@@ -101,6 +104,10 @@ end
 
 function Actor:take_damage(damage)
    self._health = math.max(0, self._health - damage)
+
+   if self._health == 0 then
+      self.signals:emit("on-death", self)
+   end
 end
 
 function Actor:update(dt)
