@@ -28,6 +28,8 @@ function Bullet:initialize(position, velocity)
 
    self._radius = 3
 
+   self._damage = 2
+
    self._bbox = Shapes.newCircleShape(self._position.x,
                                       self._position.y,
                                       self._radius)
@@ -53,6 +55,11 @@ function Bullet:on_collision(dt, shape, mtv_x, mtv_y)
          self._world:remove(self)
       end
 
+   elseif shape.type == "actor" then
+      local actor = shape.object
+
+      actor:take_damage(self._damage)
+      self._world:remove(self)
    end
 end
 
