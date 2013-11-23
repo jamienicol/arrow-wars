@@ -31,6 +31,9 @@ function Actor:initialize()
 
    self._controller = nil
 
+   self._max_health = 0
+   self._health = 0
+
    self._bbox = Shapes.newCircleShape(0, 0, self._radius)
    self._bbox.type = "actor"
    self._bbox.object = self
@@ -78,6 +81,26 @@ end
 
 function Actor:get_bbox()
    return self._bbox
+end
+
+function Actor:set_max_health(max_health)
+   self._max_health = max_health
+end
+
+function Actor:set_health(health)
+   self._health = health
+end
+
+function Actor:get_health()
+   return self._health
+end
+
+function Actor:heal(amount)
+   self._health = math.min(self._max_health, self._health + amount)
+end
+
+function Actor:take_damage(damage)
+   self._health = math.max(0, self._health - damage)
 end
 
 function Actor:update(dt)
