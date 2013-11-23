@@ -13,3 +13,6 @@
 [submodule "hardoncollider"]
 	path = hardoncollider
 	url = https://github.com/vrld/HardonCollider.git
+[submodule "quickie"]
+	path = quickie
+	url = https://github.com/vrld/Quickie.git
