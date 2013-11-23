@@ -16,16 +16,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local gamestate = require("hump.gamestate")
+local gui = require("quickie")
 local loader = require("love2d-assets-loader.Loader.loader")
 
-local SurvivalMode = require("game.survivalmode")
+local TitleScreen = require("game.titlescreen")
 
 function love.load()
    math.randomseed(os.time())
+
+   gui.keyboard.cycle.next = {key = "down"}
+   gui.keyboard.cycle.prev = {key = "up"}
 
    loader.setBaseImageDir("data/images")
    loader.init()
 
    gamestate.registerEvents()
-   gamestate.switch(SurvivalMode:new())
+   gamestate.switch(TitleScreen:new())
 end
