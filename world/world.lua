@@ -24,6 +24,8 @@ local World = class("world.world")
 
 function World:initialize()
    self._objects = {}
+   self._objects_to_add = {}
+   self._objects_to_remove = {}
 
    local loader = AdvTiledLoader.Loader
    loader.path = "data/maps/"
@@ -131,27 +133,35 @@ function World:get_height()
 end
 
 function World:add(object)
-   self._objects[object] = object
-
-   object._world = self
-
-   self._collider:addShape(object:get_bbox())
+   self._objects_to_add[object] = object
 end
 
 function World:remove(object)
-   self._objects[object] = nil
-
-   object._world = nil
-
-   self._collider:remove(object:get_bbox())
+   self._objects_to_remove[object] = object
 end
 
 function World:update(dt)
+   for _, object in pairs(self._objects_to_add) do
+      self._objects[object] = object
+      self._objects_to_add[object] = nil
+
+      object._world = self
+      self._collider:addShape(object:get_bbox())
+   end
+
    for _, object in pairs(self._objects) do
       object:update(dt)
    end
 
    self._collider:update(dt)
+
+   for _, object in pairs(self._objects_to_remove) do
+      self._objects[object] = nil
+      self._objects_to_remove[object] = nil
+
+      object._world = nil
+      self._collider:remove(object:get_bbox())
+   end
 end
 
 function World:on_collision(dt, shape_a, shape_b, mtv_x, mtv_y)
