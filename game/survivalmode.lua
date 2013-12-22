@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local class = require("middleclass.middleclass")
 
 local Actor = require("world.actor")
+local gui = require("quickie")
 local Camera = require("hump.camera")
 local HumanActorController = require("world.humanactorcontroller")
 local SimpleAIActorController = require("world.simpleaiactorcontroller")
@@ -28,6 +29,8 @@ local SurvivalMode = class("game.SurvivalMode")
 
 function SurvivalMode:enter()
    self._world = World:new()
+
+   self._status_font = love.graphics.newFont(20)
 
    self._human_actor = Actor:new()
    self._human_actor:set_position(Vector.new(400, 240))
@@ -47,6 +50,22 @@ end
 
 function SurvivalMode:update(dt)
    self._world:update(dt)
+
+   local health = math.ceil(self._human_actor:get_health())
+   local status_text = string.format("Health: %d\nScore: %d",
+                                     health,
+                                     self._score)
+   local _, num_lines = self._status_font:getWrap(status_text,
+                                                  love.graphics.getWidth())
+   love.graphics.setFont(self._status_font)
+   gui.Label({text = status_text,
+              pos = {
+                 32,
+                 love.graphics.getHeight() - 32 -
+                    self._status_font:getHeight() * num_lines
+              },
+              size = {"tight", "tight"},
+              align = "bottom"})
 end
 
 function SurvivalMode:_add_new_ai_actor()
@@ -87,6 +106,8 @@ function SurvivalMode:draw()
    self._camera:lookAt(camera_x, camera_y)
 
    self._world:draw(self._camera)
+
+   gui.core.draw()
 end
 
 return SurvivalMode
