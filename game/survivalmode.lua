@@ -38,6 +38,8 @@ function SurvivalMode:enter()
    self._human_actor:set_controller(human_controller)
    self._world:add(self._human_actor)
 
+   self._score = 0
+
    self:_add_new_ai_actor()
 
    self._camera = Camera.new()
@@ -65,6 +67,8 @@ end
 
 function SurvivalMode:_on_ai_actor_death(actor)
    self._world:remove(actor)
+
+   self._score = self._score + 1
 
    self:_add_new_ai_actor()
 end
