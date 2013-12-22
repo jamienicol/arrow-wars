@@ -38,21 +38,35 @@ function SurvivalMode:enter()
    self._human_actor:set_controller(human_controller)
    self._world:add(self._human_actor)
 
-   self._ai_actor = Actor:new()
-   self._ai_actor:set_position(Vector.new(800, 240))
-   self._ai_actor:set_max_speed(128)
-   self._ai_actor:set_max_health(20)
-   self._ai_actor:set_health(20)
-   local ai_controller = SimpleAIActorController:new(self._ai_actor,
-                                                     self._human_actor)
-   self._ai_actor:set_controller(ai_controller)
-   self._world:add(self._ai_actor)
+   self:_add_new_ai_actor()
 
    self._camera = Camera.new()
 end
 
 function SurvivalMode:update(dt)
    self._world:update(dt)
+end
+
+function SurvivalMode:_add_new_ai_actor()
+   local ai = Actor:new()
+   ai:set_position(Vector.new(800, 240))
+   ai:set_max_speed(128)
+   ai:set_max_health(20)
+   ai:set_health(20)
+   local ai_controller = SimpleAIActorController:new(ai, self._human_actor)
+   ai:set_controller(ai_controller)
+   self._world:add(ai)
+
+   ai.signals:register("on-death",
+                       function(actor)
+                          self:_on_ai_actor_death(actor)
+                       end)
+end
+
+function SurvivalMode:_on_ai_actor_death(actor)
+   self._world:remove(actor)
+
+   self:_add_new_ai_actor()
 end
 
 function SurvivalMode:draw()
