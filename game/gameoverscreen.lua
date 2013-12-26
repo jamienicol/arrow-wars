@@ -16,28 +16,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local class = require("middleclass.middleclass")
-
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
 
-local TitleScreen = class("game.TitleScreen")
+local GameOverScreen = class("game.GameOverScreen")
 
-function TitleScreen:enter()
+function GameOverScreen:enter(previous, score)
+   self._score = score
+
    self._title_font = love.graphics.newFont(45)
-   self._menu_font = love.graphics.newFont(25)
-   self._menu_width = 200
-   self._menu_height = 36
+   self._text_font = love.graphics.newFont(25)
 end
 
-function TitleScreen:keypressed(key, unicode)
-   gui.keyboard.pressed(key, unicode)
+function GameOverScreen:keypressed(key, unicode)
+   if key == 'return' then
+      local TitleScreen = require("game.titlescreen")
+      gamestate.switch(TitleScreen:new())
+   end
 end
 
-function TitleScreen:update(dt)
+function GameOverScreen:update(dt)
 
    love.graphics.setFont(self._title_font)
-
-   gui.Label({text = "Arrow Wars",
+   gui.Label({text = "Game Over",
               pos = {
                  love.graphics.getWidth() / 4,
                  32
@@ -48,32 +49,21 @@ function TitleScreen:update(dt)
               },
               align="center"})
 
-   gui.group.push({grow = "down",
-                   pos = {
-                      (love.graphics.getWidth() - self._menu_width) / 2,
-                      love.graphics.getHeight() / 2
-                   },
-                   spacing = 4,
-                   align="center"})
-
-   love.graphics.setFont(self._menu_font)
-
-   if gui.Button({text = "Play",
-                  size = {self._menu_width, self._menu_height}}) then
-      local SurvivalMode = require("game.survivalmode")
-      gamestate.switch(SurvivalMode:new())
-   end
-
-   if gui.Button({text = "Quit",
-                  size = {self._menu_width, self._menu_height}}) then
-      love.event.quit()
-   end
-
-   gui.group.pop()
+   love.graphics.setFont(self._text_font)
+   gui.Label({text = string.format("You scored %d", self._score),
+              pos = {
+                 love.graphics.getWidth() / 4,
+                 love.graphics.getHeight() / 2
+              },
+              size = {
+                 love.graphics.getWidth() / 2,
+                 "tight"
+              },
+              align="center"})
 end
 
-function TitleScreen:draw()
+function GameOverScreen:draw()
    gui.core.draw()
 end
 
-return TitleScreen
+return GameOverScreen

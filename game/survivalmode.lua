@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local class = require("middleclass.middleclass")
 
 local Actor = require("world.actor")
+local gamestate = require("hump.gamestate")
 local gui = require("quickie")
 local Camera = require("hump.camera")
 local HumanActorController = require("world.humanactorcontroller")
@@ -40,6 +41,11 @@ function SurvivalMode:enter()
    local human_controller = HumanActorController:new(self._human_actor)
    self._human_actor:set_controller(human_controller)
    self._world:add(self._human_actor)
+
+   self._human_actor.signals:register("on-death",
+                                      function(actor)
+                                         self:_on_human_actor_death(actor)
+                                      end)
 
    self._score = 0
 
@@ -82,6 +88,11 @@ function SurvivalMode:_add_new_ai_actor()
                        function(actor)
                           self:_on_ai_actor_death(actor)
                        end)
+end
+
+function SurvivalMode:_on_human_actor_death(actor)
+   local GameOverScreen = require("game.gameoverscreen")
+   gamestate.switch(GameOverScreen:new(), self._score)
 end
 
 function SurvivalMode:_on_ai_actor_death(actor)
