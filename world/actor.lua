@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local Bullet = require("world.bullet")
 local class = require("middleclass.middleclass")
 local Collider = require("hardoncollider")
-local loader = require("love2d-assets-loader.Loader.loader")
 local Signal = require("hump.signal")
 local Shapes = require("hardoncollider.shapes")
 local Vector = require("hump.vector")
@@ -76,6 +75,14 @@ end
 
 function Actor:set_max_speed(max_speed)
    self._max_speed = max_speed
+end
+
+function Actor:get_image()
+   return self._image
+end
+
+function Actor:set_image(image)
+   self._image = image
 end
 
 function Actor:get_controller()
@@ -152,13 +159,12 @@ function Actor:on_collision(dt, shape, mtv_x, mtv_y)
 end
 
 function Actor:draw()
-   local image = loader.Image.arrow
-   love.graphics.draw(image,
+   love.graphics.draw(self._image,
                       self._position.x, self._position.y,
                       self._direction_facing,
                       1, 1,
-                      image:getWidth() / 2,
-                      image:getHeight() / 2)
+                      self._image:getWidth() / 2,
+                      self._image:getHeight() / 2)
 end
 
 return Actor
