@@ -58,6 +58,10 @@ function Actor:set_position(position)
    self._bbox:moveTo(position.x, position.y)
 end
 
+function Actor:get_radius()
+   return self._radius
+end
+
 function Actor:get_direction_facing()
    return self._direction_facing
 end
