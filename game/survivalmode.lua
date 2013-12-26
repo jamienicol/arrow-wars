@@ -22,6 +22,7 @@ local gamestate = require("hump.gamestate")
 local gui = require("quickie")
 local Camera = require("hump.camera")
 local HumanActorController = require("world.humanactorcontroller")
+local Shapes = require("hardoncollider.shapes")
 local SimpleAIActorController = require("world.simpleaiactorcontroller")
 local Vector = require("hump.vector")
 local World = require("world.world")
@@ -34,7 +35,7 @@ function SurvivalMode:enter()
    self._status_font = love.graphics.newFont(20)
 
    self._human_actor = Actor:new()
-   self._human_actor:set_position(Vector.new(400, 240))
+   self:_place_actor_at_random_position(self._human_actor)
    self._human_actor:set_max_speed(256)
    self._human_actor:set_max_health(60)
    self._human_actor:set_health(60)
@@ -74,9 +75,23 @@ function SurvivalMode:update(dt)
               align = "bottom"})
 end
 
+function SurvivalMode:_place_actor_at_random_position(actor)
+   local position
+   repeat
+      position = Vector.new(math.random(0, self._world:get_width()),
+                            math.random(0, self._world:get_height()))
+
+      local shape = Shapes.newCircleShape(position.x,
+                                          position.y,
+                                          actor:get_radius())
+    until not self._world:does_shape_collide(shape)
+
+    actor:set_position(position)
+end
+
 function SurvivalMode:_add_new_ai_actor()
    local ai = Actor:new()
-   ai:set_position(Vector.new(800, 240))
+   self:_place_actor_at_random_position(ai)
    ai:set_max_speed(128)
    ai:set_max_health(20)
    ai:set_health(20)

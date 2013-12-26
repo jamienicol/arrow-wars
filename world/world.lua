@@ -124,6 +124,23 @@ function World:_create_tile_collision_boxes()
    return boxes
 end
 
+function World:does_shape_collide(shape)
+   local collisions = false
+
+   self._collider:addShape(shape)
+
+   for _, neighbor in pairs(shape:neighbors()) do
+      if shape:collidesWith(neighbor) then
+         collisions = true
+         break
+      end
+   end
+
+   self._collider:remove(shape)
+
+   return collisions
+end
+
 function World:get_width()
    return self._map.width * self._map.tileWidth
 end
