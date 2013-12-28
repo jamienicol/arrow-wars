@@ -21,6 +21,8 @@ local Actor = require("world.actor")
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
 local Camera = require("hump.camera")
+local Crate = require("world.item.crate")
+local Heart = require("world.item.heart")
 local HumanActorController = require("world.humanactorcontroller")
 local loader = require("love2d-assets-loader.Loader.loader")
 local Shapes = require("hardoncollider.shapes")
@@ -117,6 +119,12 @@ function SurvivalMode:_on_ai_actor_death(actor)
    self._world:remove(actor)
 
    self._score = self._score + 1
+
+   if math.random() < 0.5 then
+      local item = Heart:new()
+      local crate = Crate:new(actor:get_position(), item)
+      self._world:add(crate)
+   end
 
    self:_add_new_ai_actor()
 end
