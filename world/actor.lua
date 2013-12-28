@@ -155,6 +155,15 @@ function Actor:on_collision(dt, shape, mtv_x, mtv_y)
 
    elseif shape.type == "actor" then
       self:move(Vector.new(mtv_x / 2, mtv_y / 2))
+
+   elseif shape.type == "crate" then
+      local crate = shape.object
+      local item = crate:get_item()
+      self._world:remove(crate)
+
+      if item:should_automatically_use() then
+         item:use(self)
+      end
    end
 end
 
