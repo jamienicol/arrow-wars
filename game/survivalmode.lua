@@ -63,9 +63,12 @@ function SurvivalMode:update(dt)
    self._world:update(dt)
 
    local health = math.ceil(self._human_actor:get_health())
-   local status_text = string.format("Health: %d\nScore: %d",
+   local item = self._human_actor:get_held_item()
+   local item_name = item and item:get_name() or "None"
+   local status_text = string.format("Health: %d\nScore: %d\nItem: %s",
                                      health,
-                                     self._score)
+                                     self._score,
+                                     item_name)
    local _, num_lines = self._status_font:getWrap(status_text,
                                                   love.graphics.getWidth())
    love.graphics.setFont(self._status_font)
