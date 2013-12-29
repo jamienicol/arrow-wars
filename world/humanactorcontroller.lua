@@ -30,7 +30,8 @@ function HumanActorController:initialize(actor)
       left = "left",
       right = "right",
       lctrl = "strafe",
-      [" "] = "shoot"
+      [" "] = "shoot",
+      ["return"] = "use_item"
    }
 end
 
@@ -63,6 +64,11 @@ function HumanActorController:update(dt)
    -- shoot
    if self._control.tap.shoot then
       self._actor:shoot()
+   end
+
+   -- use item
+   if self._control.tap.use_item and self._actor._held_item then
+      self._actor:use_item()
    end
 end
 
