@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local class = require("middleclass.middleclass")
 
 local Actor = require("world.actor")
+local Bomb = require("world.item.bomb")
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
 local Camera = require("hump.camera")
@@ -123,8 +124,14 @@ function SurvivalMode:_on_ai_actor_death(actor)
 
    self._score = self._score + 1
 
-   if math.random() < 0.5 then
-      local item = Heart:new()
+   if math.random() < 0.75 then
+      local item
+      local rand = math.random()
+      if rand < 0.8 then
+         item = Heart:new()
+      else
+         item = Bomb:new()
+      end
       local crate = Crate:new(actor:get_position(), item)
       self._world:add(crate)
    end
