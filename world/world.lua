@@ -163,7 +163,10 @@ function World:update(dt)
       self._objects_to_add[object] = nil
 
       object._world = self
-      self._collider:addShape(object:get_bbox())
+      local bbox = object:get_bbox()
+      if bbox then
+         self._collider:addShape(bbox)
+      end
    end
 
    for _, object in pairs(self._objects) do
@@ -177,7 +180,10 @@ function World:update(dt)
       self._objects_to_remove[object] = nil
 
       object._world = nil
-      self._collider:remove(object:get_bbox())
+      local bbox = object:get_bbox()
+      if bbox then
+         self._collider:remove(bbox)
+      end
    end
 end
 
