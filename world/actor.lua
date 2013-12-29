@@ -97,6 +97,10 @@ function Actor:get_bbox()
    return self._bbox
 end
 
+function Actor:get_held_item()
+   return self._held_item
+end
+
 function Actor:set_max_health(max_health)
    self._max_health = max_health
 end
@@ -144,6 +148,11 @@ function Actor:shoot()
    self._world:add(bullet)
 end
 
+function Actor:use_item()
+   self._held_item:use(self)
+   self._held_item = nil
+end
+
 function Actor:on_collision(dt, shape, mtv_x, mtv_y)
    if shape.type == "edge" then
       self:move(Vector.new(mtv_x, mtv_y))
@@ -163,6 +172,8 @@ function Actor:on_collision(dt, shape, mtv_x, mtv_y)
 
       if item:should_automatically_use() then
          item:use(self)
+      else
+         self._held_item = item
       end
    end
 end
