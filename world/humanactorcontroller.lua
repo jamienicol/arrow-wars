@@ -30,6 +30,7 @@ function HumanActorController:initialize(actor)
       left = "left",
       right = "right",
       lctrl = "strafe",
+      lshift = "strafe",
       [" "] = "shoot",
       ["return"] = "use_item"
    }

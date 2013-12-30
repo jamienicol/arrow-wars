@@ -12,7 +12,7 @@ Make sure you have git and LÖVE 0.8 installed. Then clone the source code from 
 ## Controls
 
 * Use arrow keys to move
-* Hold down ctrl to not change direction when moving
+* Hold down either ctrl or shift to not change direction when moving
 * Press space to shoot
 * Press return to use items
 
