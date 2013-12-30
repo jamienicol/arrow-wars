@@ -26,6 +26,7 @@ local Crate = require("world.item.crate")
 local Heart = require("world.item.heart")
 local HumanActorController = require("world.humanactorcontroller")
 local loader = require("love2d-assets-loader.Loader.loader")
+local Missile = require("world.item.missile")
 local Shapes = require("hardoncollider.shapes")
 local SimpleAIActorController = require("world.simpleaiactorcontroller")
 local Vector = require("hump.vector")
@@ -127,10 +128,12 @@ function SurvivalMode:_on_ai_actor_death(actor)
    if math.random() < 0.75 then
       local item
       local rand = math.random()
-      if rand < 0.8 then
+      if rand < 0.5 then
          item = Heart:new()
-      else
+      elseif rand < 0.75 then
          item = Bomb:new()
+      else
+         item = Missile:new()
       end
       local crate = Crate:new(actor:get_position(), item)
       self._world:add(crate)
