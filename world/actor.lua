@@ -118,10 +118,12 @@ function Actor:heal(amount)
 end
 
 function Actor:take_damage(damage)
-   self._health = math.max(0, self._health - damage)
+   if self._health > 0 then
+      self._health = math.max(0, self._health - damage)
 
-   if self._health == 0 then
-      self.signals:emit("on-death", self)
+      if self._health == 0 then
+         self.signals:emit("on-death", self)
+      end
    end
 end
 
