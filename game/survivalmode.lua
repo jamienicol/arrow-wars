@@ -140,6 +140,10 @@ function SurvivalMode:_on_ai_actor_death(actor)
    end
 
    self:_add_new_ai_actor()
+
+   if self._score % 5 == 0 then
+      self:_add_new_ai_actor()
+   end
 end
 
 function SurvivalMode:draw()
