@@ -18,7 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local class = require("middleclass.middleclass")
 local Actor = require("world.actor")
 local AdvTiledLoader = require("AdvTiledLoader")
+local Bomb = require("world.item.bomb")
+local Bullet = require("world.bullet")
 local Collider = require("hardoncollider")
+local Crate = require("world.item.crate")
+local Explosion = require("world.explosion")
+local Heart = require("world.item.heart")
+local Missile = require("world.item.missile")
 local Shapes = require("hardoncollider.shapes")
 
 local World = class("world.world")
@@ -225,6 +231,40 @@ function World:collision_stop(dt, shape_a, shape_b)
    end
 end
 
+local function _getObjectDepth(object)
+   if object:isInstanceOf(Explosion) then
+      return 0
+   elseif object:isInstanceOf(Missile) then
+      return 1
+   elseif object:isInstanceOf(Bullet) then
+      return 2
+   elseif object:isInstanceOf(Actor) then
+      return 3
+   elseif object:isInstanceOf(Bomb) then
+      return 4
+   elseif object:isInstanceOf(Heart) then
+      return 5
+   elseif object:isInstanceOf(Crate) then
+      return 6
+   else
+      return 7
+   end
+end
+
+local function _sortObjectsByDepth(objects)
+   local sorted = {}
+
+   for _, object in pairs(objects) do
+      table.insert(sorted, object)
+   end
+   table.sort(sorted,
+              function(a, b)
+                 return _getObjectDepth(a) > _getObjectDepth(b)
+              end)
+
+   return sorted
+end
+
 function World:draw(camera)
    camera:attach()
 
@@ -239,7 +279,7 @@ function World:draw(camera)
 
    self._map:draw()
 
-   for _, object in pairs(self._objects) do
+   for _, object in ipairs(_sortObjectsByDepth(self._objects)) do
       object:draw(dt)
    end
 
