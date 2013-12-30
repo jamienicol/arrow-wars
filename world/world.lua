@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local class = require("middleclass.middleclass")
+local Actor = require("world.actor")
 local AdvTiledLoader = require("AdvTiledLoader")
 local Collider = require("hardoncollider")
 local Shapes = require("hardoncollider.shapes")
@@ -156,6 +157,17 @@ end
 function World:remove(object)
    self._objects_to_remove[object] = object
 end
+
+function World:get_actors()
+   local actors = {}
+   for object, _ in pairs(self._objects) do
+      if object:isInstanceOf(Actor) then
+         actors[object] = object
+      end
+   end
+   return actors
+end
+
 
 function World:update(dt)
    for _, object in pairs(self._objects_to_add) do
