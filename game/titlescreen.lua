@@ -19,12 +19,13 @@ local class = require("middleclass.middleclass")
 
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
+local loader = require("love2d-assets-loader.Loader.loader")
 
 local TitleScreen = class("game.TitleScreen")
 
 function TitleScreen:enter()
-   self._title_font = love.graphics.newFont(45)
-   self._menu_font = love.graphics.newFont(25)
+   self._title_font = loader.Font[45]
+   self._menu_font = loader.Font[25]
    self._menu_width = 200
    self._menu_height = 36
 end

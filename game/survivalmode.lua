@@ -35,9 +35,11 @@ local World = require("world.world")
 local SurvivalMode = class("game.SurvivalMode")
 
 function SurvivalMode:enter()
+   self:_preload_resources()
+
    self._world = World:new()
 
-   self._status_font = love.graphics.newFont(20)
+   self._status_font = loader.Font[22]
 
    self._human_actor = Actor:new()
    self:_place_actor_at_random_position(self._human_actor)
@@ -59,6 +61,17 @@ function SurvivalMode:enter()
    self:_add_new_ai_actor()
 
    self._camera = Camera.new()
+end
+
+function SurvivalMode:_preload_resources()
+   local temp
+   temp = loader.Image["arrow-black"]
+   temp = loader.Image["arrow-blue"]
+   temp = loader.Image["bomb"]
+   temp = loader.Image["bullet"]
+   temp = loader.Image["explosion"]
+   temp = loader.Image["heart"]
+   temp = loader.Image["missile"]
 end
 
 function SurvivalMode:update(dt)

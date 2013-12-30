@@ -18,14 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local class = require("middleclass.middleclass")
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
+local loader = require("love2d-assets-loader.Loader.loader")
 
 local GameOverScreen = class("game.GameOverScreen")
 
 function GameOverScreen:enter(previous, score)
    self._score = score
 
-   self._title_font = love.graphics.newFont(45)
-   self._text_font = love.graphics.newFont(25)
+   self._title_font = loader.Font[45]
+   self._text_font = loader.Font[25]
 end
 
 function GameOverScreen:keypressed(key, unicode)
