@@ -154,7 +154,7 @@ function SurvivalMode:_on_ai_actor_death(actor)
 
    self:_add_new_ai_actor()
 
-   if self._score % 5 == 0 then
+   if self._score % 5 == 0 and self._score <= 20 then
       self:_add_new_ai_actor()
    end
 end
