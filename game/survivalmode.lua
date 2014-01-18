@@ -74,6 +74,13 @@ function SurvivalMode:_preload_resources()
    temp = loader.Image["missile"]
 end
 
+function SurvivalMode:keypressed(key, unicode)
+   if key == "escape" then
+      local PauseScreen = require("game.pausescreen")
+      gamestate.push(PauseScreen:new())
+   end
+end
+
 function SurvivalMode:update(dt)
    self._world:update(dt)
 
