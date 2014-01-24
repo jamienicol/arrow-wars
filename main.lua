@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
+local cock = require("cock")
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
 local loader = require("love2d-assets-loader.Loader.loader")
@@ -58,6 +59,8 @@ function love.load()
 end
 
 function love.update(dt)
+   cock.updateAll()
+
    gamestate.update(dt)
 end
 

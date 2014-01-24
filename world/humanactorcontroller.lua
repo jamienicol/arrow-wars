@@ -1,5 +1,5 @@
 --[[
-Copyright (C) 2013 Jamie Nicol <jamie@thenicols.net>
+Copyright (C) 2013-2014 Jamie Nicol <jamie@thenicols.net>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
 local class = require("middleclass.middleclass")
+local cock = require("cock")
 local Vector = require("hump.vector")
 
 local HumanActorController = class("world.HumanActorController")
@@ -23,52 +24,48 @@ local HumanActorController = class("world.HumanActorController")
 function HumanActorController:initialize(actor)
    self._actor = actor
 
-   self._options, self._control = love.filesystem.load("TLbind.lua")()
-   self._options.keys = {
-      up = "up",
-      down = "down",
-      left = "left",
-      right = "right",
-      lctrl = "strafe",
-      lshift = "strafe",
-      [" "] = "shoot",
-      ["return"] = "use_item"
+   local control_map = {
+      default = {
+         up = { { "keyboard", "up" } },
+         down = { { "keyboard", "down" } },
+         left = { { "keyboard", "left" } },
+         right = { { "keyboard", "right" } },
+         strafe = { { "keyboard", "lctrl" }, { "keyboard", "lshift" } },
+         shoot = { { "keyboard", " ", "positive", "positive" } },
+         use_item = { { "keyboard", "return", "positive", "positive" } }
+      }
    }
+
+   self._control = cock.new()
+   self._control:setControls(control_map)
+   self._control:setDefault("default")
 end
 
 function HumanActorController:update(dt)
-   self._options:update()
 
    -- movement
    local displacement = Vector.new(0, 0)
-   if self._control.up then
-      displacement.y = displacement.y - 1
-   end
-   if self._control.down then
-      displacement.y = displacement.y + 1
-   end
-   if self._control.left then
-      displacement.x = displacement.x - 1
-   end
-   if self._control.right then
-      displacement.x = displacement.x + 1
-   end
+   displacement.y = displacement.y - self._control.current.up
+   displacement.y = displacement.y + self._control.current.down
+   displacement.x = displacement.x - self._control.current.left
+   displacement.x = displacement.x + self._control.current.right
+
    displacement = displacement:normalized() * self._actor._max_speed * dt
    self._actor:move(displacement)
 
    -- direction facing
-   if not self._control.strafe and displacement:len() > 0 then
+   if self._control.current.strafe == 0 and displacement:len() > 0 then
       self._actor:set_direction_facing(math.atan2(displacement.x,
                                                   -displacement.y))
    end
 
    -- shoot
-   if self._control.tap.shoot then
+   if self._control.current.shoot > 0 then
       self._actor:shoot()
    end
 
    -- use item
-   if self._control.tap.use_item and self._actor._held_item then
+   if self._control.current.use_item > 0 and self._actor._held_item then
       self._actor:use_item()
    end
 end
