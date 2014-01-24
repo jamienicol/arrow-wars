@@ -1,5 +1,5 @@
 --[[
-Copyright (C) 2013 Jamie Nicol <jamie@thenicols.net>
+Copyright (C) 2013-2014 Jamie Nicol <jamie@thenicols.net>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,6 +54,17 @@ function love.load()
    loader.setBaseImageDir("data/images")
    loader.init()
 
-   gamestate.registerEvents()
    gamestate.switch(TitleScreen:new())
+end
+
+function love.update(dt)
+   gamestate.update(dt)
+end
+
+function love.keypressed(key, unicode)
+   gamestate.keypressed(key, unicode)
+end
+
+function love.draw()
+   gamestate.draw()
 end
