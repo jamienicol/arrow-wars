@@ -1,5 +1,5 @@
 --[[
-Copyright (C) 2013 Jamie Nicol <jamie@thenicols.net>
+Copyright (C) 2013-2014 Jamie Nicol <jamie@thenicols.net>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ local class = require("middleclass.middleclass")
 
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
-local loader = require("love2d-assets-loader.Loader.loader")
+local loader = require("loader")
 
 local TitleScreen = class("game.TitleScreen")
 

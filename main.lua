@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 local cock = require("cock")
 local gamestate = require("hump.gamestate")
 local gui = require("quickie")
-local loader = require("love2d-assets-loader.Loader.loader")
+local loader = require("loader")
 
 local TitleScreen = require("game.titlescreen")
 

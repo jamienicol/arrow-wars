@@ -4,7 +4,7 @@ A top-down shooter I'm making for a bit of fun.
 
 ## Installation
 
-Make sure you have git and LÖVE 0.8 installed. Then clone the source code from git and run it.
+Make sure you have git and LÖVE 0.9 installed. Then clone the source code from git and run it.
 
       $ git clone --recursive git://github.com/jamienicol/arrow-wars.git
       $ love arrow-wars
